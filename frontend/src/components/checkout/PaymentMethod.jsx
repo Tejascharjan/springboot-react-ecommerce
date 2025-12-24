@@ -1,19 +1,19 @@
-import {FormControl, FormControlLabel, Radio, RadioGroup} from "@mui/material";
-import {useDispatch, useSelector} from "react-redux";
-import {addPaymentMethod, createUserCart} from "../../store/actions";
-import {useEffect} from "react";
+import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { addPaymentMethod, createUserCart } from "../../store/actions";
+import { useEffect } from "react";
 
 const PaymentMethod = () => {
-     const {paymentMethod} = useSelector((state) => state.payment);
-     const {cart, cartId} = useSelector((state) => state.carts);
-     const {isLoading, errorMessage} = useSelector((state) => state.errors);
+     const { paymentMethod } = useSelector((state) => state.payment);
+     const { cart, cartId } = useSelector((state) => state.carts);
+     const { isLoading, errorMessage } = useSelector((state) => state.errors);
 
      const dispatch = useDispatch();
 
      useEffect(() => {
           if (cart.length > 0 && !cartId && !errorMessage) {
                const sendCartItems = cart.map((item) => {
-                    return {productId: item.productId, quantity: item.quantity};
+                    return { productId: item.productId, quantity: item.quantity };
                });
                dispatch(createUserCart(sendCartItems));
           }
@@ -32,18 +32,7 @@ const PaymentMethod = () => {
                          name='paymentMethod'
                          value={paymentMethod}
                          onChange={(e) => paymentMethodHandler(e.target.value)}>
-                         <FormControlLabel
-                              value='Stripe'
-                              control={<Radio color='primary' />}
-                              label='Stripe'
-                              className='text-gray-700'
-                         />
-                         <FormControlLabel
-                              value='Paypal'
-                              control={<Radio color='primary' />}
-                              label='Paypal'
-                              className='text-gray-700'
-                         />
+                         <FormControlLabel value='Razorpay' control={<Radio color='primary' />} label='Razorpay' className='text-gray-700' />
                     </RadioGroup>
                </FormControl>
           </div>

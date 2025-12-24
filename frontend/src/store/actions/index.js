@@ -494,10 +494,19 @@ export const addNewDashboardSeller = (sendData, toast, reset, setOpen, setLoader
 
           await dispatch(getAllSellersDashboard());
      } catch (err) {
-          console.log(err);
           toast.error(err?.response?.data?.message || err?.response?.data?.password || "Internal Server Error");
      } finally {
           setLoader(false);
           setOpen(false);
      }
+};
+
+// payment and order
+export const createPaymentLink = (sendData, toast, setLoader) => async (dispatch) => {
+     try {
+          setLoader(true);
+          const { data } = await api.post("/order/razorpay", sendData);
+          console.log("payment ", data);
+          setLoader(false);
+     } catch (error) {}
 };

@@ -1,7 +1,25 @@
-import {FaRupeeSign} from "react-icons/fa";
-import {formatPriceCalculation} from "../../utils/formatPrice";
+import { FaRupeeSign } from "react-icons/fa";
+import { formatPriceCalculation } from "../../utils/formatPrice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createPaymentLink } from "../../store/actions";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
-const OrderSummary = ({totalPrice, cart, address, paymentMethod}) => {
+const OrderSummary = ({ totalPrice, cart, address, paymentMethod }) => {
+     const dispatch = useDispatch();
+     const navigate = useNavigate();
+     const [loader, setLoader] = useState(false);
+
+     const handleCheckout = () => {
+          const data = {
+               amount: totalPrice,
+               paymentMethod,
+          };
+          console.log("hjs", data);
+
+          dispatch(createPaymentLink(data, toast, setLoader));
+     };
      return (
           <div className='container mx-auto px-4 mb-12'>
                <div className='flex flex-wrap'>
@@ -47,9 +65,7 @@ const OrderSummary = ({totalPrice, cart, address, paymentMethod}) => {
                                         {cart?.map((item) => (
                                              <div key={item.productId} className='flex items-center'>
                                                   <img
-                                                       src={`${import.meta.env.VITE_BACK_END_URL}/images/${
-                                                            item?.image
-                                                       }`}
+                                                       src={`${import.meta.env.VITE_BACK_END_URL}/images/${item?.image}`}
                                                        alt='Product'
                                                        className='w-12 h-12 rounded'
                                                   />
@@ -85,6 +101,15 @@ const OrderSummary = ({totalPrice, cart, address, paymentMethod}) => {
                                         <span>₹{formatPriceCalculation(totalPrice, 1)}</span>
                                    </div>
                               </div>
+                         </div>
+
+                         <div className='mt-6'>
+                              <button
+                                   className='w-full bg-custom-blue font-semibold px-6 h-12 rounded-md text-white text-lg transition-all hover:opacity-90 disabled:opacity-60'
+                                   disabled={!address || !paymentMethod || !cart?.length}
+                                   onClick={handleCheckout}>
+                                   Checkout
+                              </button>
                          </div>
                     </div>
                </div>
