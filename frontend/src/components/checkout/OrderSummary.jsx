@@ -1,22 +1,29 @@
-import { FaRupeeSign } from "react-icons/fa";
-import { formatPriceCalculation } from "../../utils/formatPrice";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { createPaymentLink } from "../../store/actions";
+import {FaRupeeSign} from "react-icons/fa";
+import {formatPriceCalculation} from "../../utils/formatPrice";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
+import {createPaymentLink} from "../../store/actions";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import {useState} from "react";
 
-const OrderSummary = ({ totalPrice, cart, address, paymentMethod }) => {
+const OrderSummary = ({totalPrice, cart, address, paymentMethod}) => {
      const dispatch = useDispatch();
      const navigate = useNavigate();
      const [loader, setLoader] = useState(false);
+     const {user, selectedUserCheckOutAddress} = useSelector((state) => state.auth);
 
      const handleCheckout = () => {
           const data = {
-               amount: totalPrice,
+               amount: totalPrice * 100,
                paymentMethod,
+               email: user.email,
+               name: `${user.username}`,
+               address: selectedUserCheckOutAddress,
+               description: `Order for ${user.email}`,
+               metadata: {
+                    test: "1",
+               },
           };
-          console.log("hjs", data);
 
           dispatch(createPaymentLink(data, toast, setLoader));
      };
@@ -65,7 +72,9 @@ const OrderSummary = ({ totalPrice, cart, address, paymentMethod }) => {
                                         {cart?.map((item) => (
                                              <div key={item.productId} className='flex items-center'>
                                                   <img
-                                                       src={`${import.meta.env.VITE_BACK_END_URL}/images/${item?.image}`}
+                                                       src={`${import.meta.env.VITE_BACK_END_URL}/images/${
+                                                            item?.image
+                                                       }`}
                                                        alt='Product'
                                                        className='w-12 h-12 rounded'
                                                   />

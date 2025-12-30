@@ -4,20 +4,20 @@ import FormHelperText from "@mui/material/FormHelperText";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Spinners from "../../shared/Spinners";
-import { useDispatch, useSelector } from "react-redux";
-import { updateOrderStatusFromDashboard } from "../../../store/actions";
+import {useDispatch, useSelector} from "react-redux";
+import {updateOrderStatusFromDashboard} from "../../../store/actions";
 import toast from "react-hot-toast";
 
 const ORDER_STATUSES = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Accepted"];
 
-const UpdateOrderForm = ({ setOpen, selectedId, selectedItem, loader, setLoader }) => {
+const UpdateOrderForm = ({setOpen, selectedId, selectedItem, loader, setLoader}) => {
      const [orderStatus, setOrderStatus] = useState(selectedItem?.status || "Accepted");
      const [error, setError] = useState("");
      const dispatch = useDispatch();
 
-     const { user } = useSelector((state) => state.auth);
+     const {user} = useSelector((state) => state.auth);
      const isAdmin = user && user?.roles?.includes("ROLE_ADMIN");
 
      const updateOrderStatus = (e) => {

@@ -4,6 +4,7 @@ import com.ecommerce.project.config.AppConstants;
 import com.ecommerce.project.payload.*;
 import com.ecommerce.project.service.OrderService;
 import com.ecommerce.project.util.AuthUtil;
+import com.razorpay.Customer;
 import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -30,6 +31,9 @@ public class OrderController {
     @Value("${razorpay.api.secret}")
     String apiSecret;
 
+    @Value("${frontend.url}")
+    String frontEndUrl;
+
     @PostMapping("/order/users/payments/{paymentMethod}")
     public ResponseEntity<OrderDTO> orderProducts(@PathVariable String paymentMethod,
                                                   @RequestBody OrderRequestDTO orderRequestDTO) {
@@ -45,16 +49,22 @@ public class OrderController {
     @PostMapping("/order/razorpay")
     public ResponseEntity<PaymentLinkResponse> createPaymentLink(@RequestBody RazorpayDTO razorpayDTO) throws RazorpayException {
         try {
-            System.out.println("\n\n\n apiKey: " + apiKey + "\n apiSecret: " + apiSecret);
             RazorpayClient razorpayClient = new RazorpayClient(apiKey, apiSecret);
             JSONObject paymentLinkRequest = new JSONObject();
-            int amount = Integer.parseInt(razorpayDTO.getAmount());
-            paymentLinkRequest.put("amount", amount * 100);
+            paymentLinkRequest.put("amount", Integer.parseInt(razorpayDTO.getAmount()));
             paymentLinkRequest.put("currency", "INR");
 
             JSONObject customer = new JSONObject();
-            customer.put("username", authUtil.loggedInUser().getUserName());
+            customer.put("name", authUtil.loggedInUser().getUserName());
             customer.put("email", authUtil.loggedInEmail());
+            customer.put("fail_existing", "0");
+
+            JSONObject notes = new JSONObject();
+            notes.put("address", razorpayDTO.getAddress().toString());
+            notes.put("description", "hello");
+            customer.put("notes", notes);
+
+            Customer customer1 = razorpayClient.customers.create(customer);
             paymentLinkRequest.put("customer", customer);
 
             JSONObject notify = new JSONObject();
@@ -62,7 +72,7 @@ public class OrderController {
             notify.put("email", true);
             paymentLinkRequest.put("notify", notify);
 
-            paymentLinkRequest.put("callback_url", "http://localhost:5173/payment/");
+            paymentLinkRequest.put("callback_url", frontEndUrl + "/payment");
             paymentLinkRequest.put("callback_method", "get");
 
             PaymentLink paymentLink = razorpayClient.paymentLink.create(paymentLinkRequest);

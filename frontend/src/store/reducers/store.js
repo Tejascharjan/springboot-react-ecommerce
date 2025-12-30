@@ -11,9 +11,10 @@ import { sellerReducer } from "./sellerReducer";
 const user = localStorage.getItem("auth") ? JSON.parse(localStorage.getItem("auth")) : null;
 
 const cartItems = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
+const selectedUserCheckoutAddress = localStorage.getItem("CHECKOUT_ADDRESS") ? JSON.parse(localStorage.getItem("CHECKOUT_ADDRESS")) : [];
 
 const initialState = {
-     auth: { user: user },
+     auth: { user: user, selectedUserCheckoutAddress },
      carts: { cart: cartItems },
 };
 

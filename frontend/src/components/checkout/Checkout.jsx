@@ -8,7 +8,6 @@ import Skeleton from "../shared/Skeleton";
 import ErrorPage from "../shared/ErrorPage";
 import PaymentMethod from "./PaymentMethod";
 import OrderSummary from "./OrderSummary";
-import RazorpayPayment from "./RazorpayPayment";
 
 const CheckOut = () => {
      const [activeStep, setActiveStep] = useState(0);
